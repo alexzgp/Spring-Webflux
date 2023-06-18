@@ -1,6 +1,10 @@
 package com.practicas.spring.boot.webflux;
 
 import com.practicas.spring.boot.webflux.models.Usuario;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 // CommandLineRunner se utiliza para q sea una app de tipoo comando (De consola CMD)
@@ -25,9 +29,20 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		// Utilizamos método filter
-		Flux<Usuario> nombres = Flux.just("Pedro Guzman", "Anna Garcia", "Maria Delgado", "Jose Iniesta", "Pedro Soprano", "Tony Stark", "Bruce Wayne")
-				.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
+		List<String> listaDeUsuarios = new ArrayList<>();
+		listaDeUsuarios.add("Pedro Guzman");
+		listaDeUsuarios.add("Anna Garcia");
+		listaDeUsuarios.add("Maria Delgado");
+		listaDeUsuarios.add("Jose Iniesta");
+		listaDeUsuarios.add("Pedro Soprano");
+		listaDeUsuarios.add("Tony Stark");
+		listaDeUsuarios.add("Bruce Wayne");
+		
+		// Creamos un flux desde un objeto iterable
+		Flux<String> nombres = Flux.fromIterable(listaDeUsuarios);
+				
+		
+		Flux<Usuario> usuarios = nombres.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
 				.filter(usuario -> usuario.getNombre().toLowerCase().equals("pedro"))
 				.doOnNext(usuario -> {
 					//Simulamos un error si está vacio un usuario
