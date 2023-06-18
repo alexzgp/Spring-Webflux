@@ -1,5 +1,6 @@
-package com.practicassrpingbootwebflux;
+package com.practicas.spring.boot.webflux;
 
+import com.practicas.spring.boot.webflux.models.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 // CommandLineRunner se utiliza para q sea una app de tipoo comando (De consola CMD)
@@ -24,23 +25,28 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		// Creamos el primer observable con una variable, se utiiza el método just y luego la data.
-		Flux<String> nombres = Flux.just("Pedro", "Anna", "Maria", "Jose", "Laura")
-				// Con el método doOnNext le decimos qué queremos que haga con la data - aquí usamos una expresión lambda (RM = System.out::println)
-				.doOnNext(elemento -> {
-					//Simulamos un error si está vacio un elemento
-					if(elemento.isEmpty()) {
-						throw new RuntimeException("Los nombres no pueden ser vacios");
+		// Utilizamos el Map para transformar datos, no se modifica el original. Se crea una copia esta es la que se retorna.
+		Flux<Usuario> nombres = Flux.just("Pedro", "Anna", "Maria", "Jose", "Laura")
+				.map(nombre -> new Usuario(nombre.toUpperCase(), null))
+				.doOnNext(usuario -> {
+					//Simulamos un error si está vacio un usuario
+					if(usuario == null) {
+						throw new RuntimeException("Los usuarios no pueden ser vacios");
 					}
 					
-					System.out.println(elemento);
+					System.out.println(usuario.getNombre());
 					
+					})
+					.map(usuario -> {
+						String nombre = usuario.getNombre().toLowerCase();
+						usuario.setNombre(nombre);
+						return usuario;
 					});
 		
 		// Es necesario subcribirse para que funcione el observable
 		// Podemos hacer que desde el observable se ejecute una tarea
 		// Aquí usamos referencia de método (Lambda = e -> Log.info(e))
-		nombres.subscribe(Log::info,
+		nombres.subscribe(e -> Log.info(e.toString()),
 				// Manejamos el error con el método subscribe
 				error -> Log.error(error.getMessage()),
 				//Este método nos permite realizar una tarea cuando finaliza el flujo
