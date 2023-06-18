@@ -50,7 +50,7 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 			Flux.fromIterable(listaDeUsuarios)
 					.map(usuario -> usuario.getNombre().toUpperCase().concat(" ").concat(usuario.getApellido().toUpperCase()))
 					.flatMap(nombre -> {
-						if(nombre.split(" ")[0].equalsIgnoreCase("pedro")) {
+						if(nombre.contains("pedro".toUpperCase())) {
 							return Mono.just(nombre);
 						} else {
 							return Mono.empty();
