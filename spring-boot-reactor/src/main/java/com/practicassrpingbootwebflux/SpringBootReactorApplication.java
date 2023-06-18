@@ -25,13 +25,24 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 		// Creamos el primer observable con una variable, se utiiza el método just y luego la data.
-		Flux<String> nombres = Flux.just("Pedro", "Anna", "Jose", "Laura")
-				// Con el método doOnNext le decimos qué queremos que haga con la data
-				.doOnNext(elemento -> System.out.println(elemento));
+		Flux<String> nombres = Flux.just("Pedro", "Anna", "", "Jose", "Laura")
+				// Con el método doOnNext le decimos qué queremos que haga con la data - aquí usamos una expresión lambda (RM = System.out::println)
+				.doOnNext(elemento -> {
+					//Simulamos un error si está vacio un elemento
+					if(elemento.isEmpty()) {
+						throw new RuntimeException("Los nombres no pueden ser vacios");
+					}
+					
+					System.out.println(elemento);
+					
+					});
 		
 		// Es necesario subcribirse para que funcione el observable
 		// Podemos hacer que desde el observable se ejecute una tarea
-		nombres.subscribe(Log::info);
+		// Aquí usamos referencia de método (Lambda = e -> Log.info(e))
+		nombres.subscribe(Log::info,
+				// Manejamos el error con el método subscribe
+				error -> Log.error(error.getMessage()));
 	}
 
 }
