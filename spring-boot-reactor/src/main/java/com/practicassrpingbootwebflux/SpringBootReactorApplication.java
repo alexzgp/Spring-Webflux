@@ -1,5 +1,7 @@
 package com.practicassrpingbootwebflux;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // CommandLineRunner se utiliza para q sea una app de tipoo comando (De consola CMD)
 import org.springframework.boot.CommandLineRunner;
 
@@ -11,6 +13,9 @@ import reactor.core.publisher.Flux;
 
 @SpringBootApplication
 public class SpringBootReactorApplication implements CommandLineRunner {
+	
+	// Creamos atributo para desplegar en el log
+	private static final Logger Log = LoggerFactory.getLogger(SpringBootReactorApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootReactorApplication.class, args);
@@ -25,7 +30,8 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 				.doOnNext(elemento -> System.out.println(elemento));
 		
 		// Es necesario subcribirse para que funcione el observable
-		nombres.subscribe();
+		// Podemos hacer que desde el observable se ejecute una tarea
+		nombres.subscribe(Log::info);
 	}
 
 }
