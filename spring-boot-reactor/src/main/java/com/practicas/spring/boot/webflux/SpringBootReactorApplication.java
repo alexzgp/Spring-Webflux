@@ -15,6 +15,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 public class SpringBootReactorApplication implements CommandLineRunner {
@@ -28,6 +29,71 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		
+		ejemploToString();
+	
+	}
+	
+	// Copiamos el anterior ejercicio y lo reducimos para este ejemplo
+		public void ejemploToString() throws Exception {
+			
+			List<Usuario> listaDeUsuarios = new ArrayList<>();
+			listaDeUsuarios.add(new Usuario("Pedro", "Guzman"));
+			listaDeUsuarios.add(new Usuario("Anna", "Garcia"));
+			listaDeUsuarios.add(new Usuario("Maria", "Delgado"));
+			listaDeUsuarios.add(new Usuario("Jose", "Iniesta"));
+			listaDeUsuarios.add(new Usuario("Pedro", "Soprano"));
+			listaDeUsuarios.add(new Usuario("Tony", "Stark"));
+			listaDeUsuarios.add(new Usuario("Bruce", "Wayne"));
+			
+			// De un flujo observable utilizamos FlatMap para mapear transformarlo en otro tipo de flujo.
+			Flux.fromIterable(listaDeUsuarios)
+					.map(usuario -> usuario.getNombre().toUpperCase().concat(" ").concat(usuario.getApellido().toUpperCase()))
+					.flatMap(nombre -> {
+						if(nombre.split(" ")[0].equalsIgnoreCase("pedro")) {
+							return Mono.just(nombre);
+						} else {
+							return Mono.empty();
+						}
+					})
+						.map(nombre -> {
+							return nombre.toLowerCase();
+						})
+						.subscribe(u -> Log.info(u.toString()));
+			
+			}
+	
+	// Copiamos el anterior ejercicio y lo reducimos para este ejemplo
+	public void ejemploFlatMap() throws Exception {
+		
+		List<String> listaDeUsuarios = new ArrayList<>();
+		listaDeUsuarios.add("Pedro Guzman");
+		listaDeUsuarios.add("Anna Garcia");
+		listaDeUsuarios.add("Maria Delgado");
+		listaDeUsuarios.add("Jose Iniesta");
+		listaDeUsuarios.add("Pedro Soprano");
+		listaDeUsuarios.add("Tony Stark");
+		listaDeUsuarios.add("Bruce Wayne");
+		
+		// De un flujo observable utilizamos FlatMap para mapear transformarlo en otro tipo de flujo.
+		Flux.fromIterable(listaDeUsuarios)
+				.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
+				.flatMap(usuario -> {
+					if(usuario.getNombre().equalsIgnoreCase("pedro")) {
+						return Mono.just(usuario);
+					} else {
+						return Mono.empty();
+					}
+				})
+					.map(usuario -> {
+						String nombre = usuario.getNombre().toLowerCase();
+						usuario.setNombre(nombre);
+						return usuario;
+					})
+					.subscribe(u -> Log.info(u.toString()));
+		}
+
+	public void ejemploIterable() throws Exception {
 		
 		List<String> listaDeUsuarios = new ArrayList<>();
 		listaDeUsuarios.add("Pedro Guzman");
@@ -74,6 +140,5 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 					}
 				});
 	
-	}
-
+		}
 }
