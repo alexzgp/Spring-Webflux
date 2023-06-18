@@ -8,10 +8,10 @@
 		<version>3.1.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.practicas.springboot.reactor</groupId>
-	<artifactId>spring-boot-reactor-1</artifactId>
+	<groupId>com.practicas-srpingboot-webflux</groupId>
+	<artifactId>spring-boot-reactor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-reactor-1</name>
+	<name>spring-boot-reactor</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -20,7 +20,7 @@
 		<dependency>
         	<groupId>io.projectreactor</groupId>
         	<artifactId>reactor-core</artifactId> 
-     	</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>

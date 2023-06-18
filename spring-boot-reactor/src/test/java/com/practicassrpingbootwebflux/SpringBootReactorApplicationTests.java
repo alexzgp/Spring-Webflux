@@ -1,10 +1,10 @@
-package com.practicas.springboot.reactor.app;
+package com.practicassrpingbootwebflux;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootReactor1ApplicationTests {
+class SpringBootReactorApplicationTests {
 
 	@Test
 	void contextLoads() {
