@@ -25,16 +25,17 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		// Utilizamos el Map para transformar datos, no se modifica el original. Se crea una copia esta es la que se retorna.
-		Flux<Usuario> nombres = Flux.just("Pedro", "Anna", "Maria", "Jose", "Laura")
-				.map(nombre -> new Usuario(nombre.toUpperCase(), null))
+		// Utilizamos método filter
+		Flux<Usuario> nombres = Flux.just("Pedro Guzman", "Anna Garcia", "Maria Delgado", "Jose Iniesta", "Pedro Soprano", "Tony Stark", "Bruce Wayne")
+				.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
+				.filter(usuario -> usuario.getNombre().toLowerCase().equals("pedro"))
 				.doOnNext(usuario -> {
 					//Simulamos un error si está vacio un usuario
 					if(usuario == null) {
 						throw new RuntimeException("Los usuarios no pueden ser vacios");
 					}
 					
-					System.out.println(usuario.getNombre());
+					System.out.println(usuario.getNombre().concat(" ").concat(usuario.getApellido()));
 					
 					})
 					.map(usuario -> {
