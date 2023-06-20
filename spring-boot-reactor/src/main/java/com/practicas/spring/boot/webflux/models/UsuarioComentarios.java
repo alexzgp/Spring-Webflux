@@ -1,12 +1,12 @@
 package com.practicas.spring.boot.webflux.models;
 
-public class UsuarioComentario {
+public class UsuarioComentarios {
 	
 	private Usuario usuario;
 	
 	private Comentarios comentarios;
 	
-	public UsuarioComentario(Usuario usuario, Comentarios comentarios) {
+	public UsuarioComentarios(Usuario usuario, Comentarios comentarios) {
 		this.usuario = usuario;
 		this.comentarios = comentarios;
 	}

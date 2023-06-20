@@ -1,6 +1,8 @@
 package com.practicas.spring.boot.webflux;
 
+import com.practicas.spring.boot.webflux.models.Comentarios;
 import com.practicas.spring.boot.webflux.models.Usuario;
+import com.practicas.spring.boot.webflux.models.UsuarioComentarios;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,26 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemploCollectList();
+		ejemploUsuarioComentariosFlatMap();
 	
+	}
+	
+	public void ejemploUsuarioComentariosFlatMap() {
+		
+		// Creamos los 2 observables Mono que vamos a fusionar
+		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("John", "Doe"));
+		
+		Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()-> {
+			Comentarios comentarios = new Comentarios();
+			comentarios.addComentario("Hola crack, ¿cómo andas?");
+			comentarios.addComentario("Voy al gym y luego a estudiar un rato");
+			comentarios.addComentario("¡Estamos en modo guerra!");
+			return comentarios;
+		});
+		
+		// Fusionamos ambos observables utilizando FlatMap - para abreviar usamos usuario(u), comentarios(c), usuarioComentarios(uc)
+		usuarioMono.flatMap(u -> comentariosUsuarioMono.map(c -> new UsuarioComentarios(u, c)))
+		.subscribe(uc -> Log.info(uc.toString()));
 	}
 	
 	// Copiamos el anterior ejercicio y lo reducimos para este ejemplo
