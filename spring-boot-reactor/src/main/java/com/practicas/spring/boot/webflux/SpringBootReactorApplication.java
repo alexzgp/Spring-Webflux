@@ -30,9 +30,34 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemploToString();
+		ejemploCollectList();
 	
 	}
+	
+	// Copiamos el anterior ejercicio y lo reducimos para este ejemplo
+			public void ejemploCollectList() throws Exception {
+				
+				List<Usuario> listaDeUsuarios = new ArrayList<>();
+				listaDeUsuarios.add(new Usuario("Pedro", "Guzman"));
+				listaDeUsuarios.add(new Usuario("Anna", "Garcia"));
+				listaDeUsuarios.add(new Usuario("Maria", "Delgado"));
+				listaDeUsuarios.add(new Usuario("Jose", "Iniesta"));
+				listaDeUsuarios.add(new Usuario("Pedro", "Soprano"));
+				listaDeUsuarios.add(new Usuario("Tony", "Stark"));
+				listaDeUsuarios.add(new Usuario("Bruce", "Wayne"));
+				
+				// De un flujo observable utilizamos FlatMap para mapear transformarlo en otro tipo de flujo.
+				Flux.fromIterable(listaDeUsuarios)
+						// De este modo se muestra cada elemento de la lista como un observable Flux.
+						// .subscribe(usuario -> Log.info(usuario.toString())) 
+						.collectList() // Con este método transforma el observable en un Mono (emite un solo elemento, la lista completa)
+						.subscribe(lista -> {
+							// Podemos recorrer cada elemento de la lista con el método forEach
+							lista.forEach(item -> Log.info(item.toString()));
+						});
+						
+				
+				}
 	
 	// Copiamos el anterior ejercicio y lo reducimos para este ejemplo
 		public void ejemploToString() throws Exception {
