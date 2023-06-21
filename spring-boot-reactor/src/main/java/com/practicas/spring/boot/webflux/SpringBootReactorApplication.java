@@ -4,6 +4,7 @@ import com.practicas.spring.boot.webflux.models.Comentarios;
 import com.practicas.spring.boot.webflux.models.Usuario;
 import com.practicas.spring.boot.webflux.models.UsuarioComentarios;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,37 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemploZipWithRangos();
+		ejemplointerval();
 	
+	}
+	
+	// Copiamos el ejemplo anterior
+	public void ejemploDelayElements() {
+		
+		Flux<Integer> rango = Flux.range(0, 12)
+				.delayElements(Duration.ofSeconds(1))
+				.doOnNext(i -> Log.info(i.toString()));
+		
+		// A modo de ejemplo se va a usar el block
+		rango
+		.blockLast();
+		// .subscribe(); Si dejamos el subscribe no vamos a ver los números porque se emiten en segundo plano y ya finalizó el main
+		
+		
+		
+	}
+	
+	public void ejemplointerval() {
+		
+		Flux<Integer> rango = Flux.range(0, 12);
+		Flux<Long> retraso = Flux.interval(Duration.ofSeconds(1));
+		
+		rango.zipWith(retraso, (ra, re) -> ra)
+		.doOnNext(i -> Log.info(i.toString()))
+		// .subscribe(); Si dejamos el subscribe no vamos a ver los números porque se emiten en segundo plano y ya finalizó el main
+		// A modo de ejemplo se va a usar el block
+		.blockLast();
+		
 	}
 
 	public void ejemploZipWithRangos() {
