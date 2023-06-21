@@ -32,8 +32,55 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemploUsuarioComentariosFlatMap();
+		ejemploUsuarioComentariosZipWithForma2();
 	
+	}
+	
+	//Copiamos el ejemplo anterior
+		public void ejemploUsuarioComentariosZipWithForma2() {
+			
+			// Creamos los 2 observables Mono que vamos a fusionar
+			Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("John", "Doe"));
+			
+			Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()-> {
+				Comentarios comentarios = new Comentarios();
+				comentarios.addComentario("Hola crack, ¿cómo andas?");
+				comentarios.addComentario("Voy al gym y luego a estudiar un rato");
+				comentarios.addComentario("¡Estamos en modo guerra!");
+				return comentarios;
+			});
+			
+			// Fusionamos ambos observables utilizando FlatMap - para abreviar usamos usuario(u), comentarios(c), usuarioComentarios(uc)
+			Mono<UsuarioComentarios> usuarioConComentarios = usuarioMono
+					.zipWith(comentariosUsuarioMono)
+					.map(tuple -> {
+						Usuario u = tuple.getT1();
+						Comentarios c = tuple.getT2();
+						return new UsuarioComentarios(u, c);
+					});
+			
+			usuarioConComentarios.subscribe(uc -> Log.info(uc.toString()));
+		}
+	
+	//Copiamos el ejemplo anterior
+	public void ejemploUsuarioComentariosZipWith() {
+		
+		// Creamos los 2 observables Mono que vamos a fusionar
+		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("John", "Doe"));
+		
+		Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()-> {
+			Comentarios comentarios = new Comentarios();
+			comentarios.addComentario("Hola crack, ¿cómo andas?");
+			comentarios.addComentario("Voy al gym y luego a estudiar un rato");
+			comentarios.addComentario("¡Estamos en modo guerra!");
+			return comentarios;
+		});
+		
+		// Fusionamos ambos observables utilizando FlatMap - para abreviar usamos usuario(u), comentarios(c), usuarioComentarios(uc)
+		Mono<UsuarioComentarios> usuarioConComentarios = usuarioMono
+				.zipWith(comentariosUsuarioMono, (usuario, comentariosUsuario) -> new UsuarioComentarios(usuario, comentariosUsuario));
+		
+		usuarioConComentarios.subscribe(uc -> Log.info(uc.toString()));
 	}
 	
 	public void ejemploUsuarioComentariosFlatMap() {
