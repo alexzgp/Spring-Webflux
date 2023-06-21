@@ -32,8 +32,18 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemploUsuarioComentariosZipWithForma2();
+		ejemploZipWithRangos();
 	
+	}
+
+	public void ejemploZipWithRangos() {
+		
+		// Creamos un Flux sencillo y utilizamos un map para repasar lo aprendido.
+		Flux.just(1, 2, 3, 4)
+		.map(i -> i*2)
+		// Usamos el método range para crear un rango de números y usamos String.format para imprimir el texto de manera secilla.
+		.zipWith(Flux.range(0, 4), (uno, dos) -> String.format("Primer Flux: %d - Segundo Flux: %d", uno, dos))
+		.subscribe(texto -> Log.info(texto));
 	}
 	
 	//Copiamos el ejemplo anterior
