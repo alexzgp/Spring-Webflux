@@ -54,6 +54,7 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 			return Flux.just(i);
 		})
 		.map(i -> "Hola "+i)
+		.retry(2)
 		.doOnNext(string -> Log.info(string))
 		.subscribe();
 		
