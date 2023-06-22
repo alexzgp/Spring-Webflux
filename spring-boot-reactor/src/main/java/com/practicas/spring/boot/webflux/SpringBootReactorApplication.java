@@ -7,6 +7,7 @@ import com.practicas.spring.boot.webflux.models.UsuarioComentarios;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,30 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemplointerval();
+		ejemplointervaloInfinito();
 	
+	}
+	
+	public void ejemplointervaloInfinito() throws InterruptedException {
+		
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		
+		// Creamos un intervalo infinito que se ejecuta cada 1 segundo
+		Flux.interval(Duration.ofSeconds(1))
+		.doOnTerminate(() -> latch.countDown())
+		// Controlamos el flujo para que finalice en el quinto intervalo con un error
+		.flatMap(i -> {
+			if(i >= 5) {
+				return Flux.error(new InterruptedException("Solo hasta 5!"));
+			}
+			return Flux.just(i);
+		})
+		.map(i -> "Hola "+i)
+		.doOnNext(string -> Log.info(string))
+		.subscribe();
+		
+		latch.await();
 	}
 	
 	// Copiamos el ejemplo anterior
