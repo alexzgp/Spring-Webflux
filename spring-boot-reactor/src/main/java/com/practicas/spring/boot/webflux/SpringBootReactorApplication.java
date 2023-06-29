@@ -7,6 +7,8 @@ import com.practicas.spring.boot.webflux.models.UsuarioComentarios;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -34,8 +36,43 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		ejemplointervaloInfinito();
+		ejemploInvelDesdeCreate();
 	
+	}
+	
+	public void ejemploInvelDesdeCreate() {
+		Flux.create(emitter -> {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				
+				private Integer contador = 0;
+				
+				@Override
+				public void run() {
+					emitter.next(++contador);
+					if(contador == 10) {
+						timer.cancel();
+						emitter.complete();
+					}
+					
+					/*
+					if(contador == 5) {
+						timer.cancel();
+						emitter.error(new InterruptedException("Error, se ha detenido el flux en 5!"));
+					}
+					*/
+				}
+			}, 1000, 1000);
+		})
+		.doOnNext(next -> Log.info(next.toString()))
+		.doOnComplete(() -> Log.info("Hemos terminado"))
+		.subscribe();
+		// Forma de hacerlo en en subscribe - Es necesario incluir el error
+		/*
+		 .subscribe(next -> Log.info(next.toString()),
+		 error -> Log.error(error.getMessage()),
+		 () -> Log.info("Hemos terminado"));
+		*/
 	}
 	
 	public void ejemplointervaloInfinito() throws InterruptedException {
