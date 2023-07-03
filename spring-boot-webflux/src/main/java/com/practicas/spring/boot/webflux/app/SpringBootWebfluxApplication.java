@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import reactor.core.publisher.Flux;
@@ -39,7 +41,8 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 		
 		Flux.just(new Producto("TV de plastma", 1000),
 				new Producto("Xiaomy", 2000),
-				new Producto("PSP", 1500)
+				new Producto("PSP", 1500),
+				new Producto("Xiaomy", 2000)
 				)
 		// Usamos Flatmap y no map porque el dao.save regresa un mono y con el flatmap e convierte en un producto para trabajar con él.
 		.flatMap(producto -> {
