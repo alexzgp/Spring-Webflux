@@ -3,6 +3,8 @@ package com.practicas.spring.boot.webflux.app;
 import com.practicas.spring.boot.webflux.app.models.dao.ProductoDao;
 import com.practicas.spring.boot.webflux.app.models.documents.Producto;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,13 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 				new Producto("PSP", 1500)
 				)
 		// Usamos Flatmap y no map porque el dao.save regresa un mono y con el flatmap e convierte en un producto para trabajar con él.
-		.flatMap(producto -> dao.save(producto))
-		.subscribe(producto -> log.info("Insert: " + producto.getNombre() + producto.getPrecio()));
+		.flatMap(producto -> {
+			
+			// Agregamos la fecha de creación del producto
+			producto.setCreateAt(new Date());
+			return dao.save(producto);
+			})
+			.subscribe(producto -> log.info("Insert: " + producto.getNombre() + producto.getPrecio()));
 		
 	}
 
