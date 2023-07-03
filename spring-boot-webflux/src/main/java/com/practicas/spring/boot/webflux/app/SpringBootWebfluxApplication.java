@@ -21,6 +21,7 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 	@Autowired
 	private ProductoDao dao;
 	
+	@Autowired
 	private ReactiveMongoTemplate mongoTemplate;
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringBootWebfluxApplication.class);
