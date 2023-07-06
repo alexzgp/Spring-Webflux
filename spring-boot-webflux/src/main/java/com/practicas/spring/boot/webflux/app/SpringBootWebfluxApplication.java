@@ -42,6 +42,10 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 		Flux.just(new Producto("TV de plastma", 1000),
 				new Producto("Xiaomy", 2000),
 				new Producto("PSP", 1500),
+				new Producto("Xiaomy", 2000),
+				new Producto("TV de plastma", 1000),
+				new Producto("Xiaomy", 2000),
+				new Producto("PSP", 1500),
 				new Producto("Xiaomy", 2000)
 				)
 		// Usamos Flatmap y no map porque el dao.save regresa un mono y con el flatmap e convierte en un producto para trabajar con él.
