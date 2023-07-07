@@ -58,4 +58,22 @@ public class ProductoController {
 		return "listar";
 		
 	}
+	
+	// Envíio de datos por defecto
+	@GetMapping("/listar-full")
+	private String listarFull(Model model) {
+		
+		Flux<Producto> productos = dao.findAll().map(producto -> {
+			//Transformamos el nombre en mayuscula y retornamos el producto
+			producto.setNombre(producto.getNombre().toUpperCase());
+			return producto;
+		})
+		// Metodo que funciona para repetir el flujo	
+		.repeat(5000);
+		
+		model.addAttribute("productos", productos);
+		model.addAttribute("titulo", "Listado de productos");
+		return "listar";
+		
+	}
 }
