@@ -26,7 +26,7 @@
       </thead>
       <tbody>
         <tr th:each="producto: ${productos}">
-          <td><a th:href="@{/ver/} + ${producto.id}"  th:text="${#strings.abbreviate(producto.id, 5)}"></a></td>
+          <td><a th:href="@{/ver/} + ${producto.id}"  th:text="${#strings.abbreviate(producto.id, 10)}"></a></td>
           <td th:text="${producto.nombre}"></td>
           <td th:text="${#numbers.formatCurrency(producto.precio)}"></td>
           <td th:text="${#calendars.format(producto.createAt, 'dd/MM/yyyy')}"></td>
