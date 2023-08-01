@@ -5,9 +5,11 @@ import com.spring.webflux.apirest.app.models.dao.ProductoDao;
 import com.spring.webflux.apirest.app.models.documents.Categoria;
 import com.spring.webflux.apirest.app.models.documents.Producto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class ProductoServiceImpl implements ProductoService{
 
     @Autowired

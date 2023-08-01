@@ -2,8 +2,10 @@ package com.spring.webflux.apirest.app.models.services;
 
 import com.spring.webflux.apirest.app.models.documents.Categoria;
 import com.spring.webflux.apirest.app.models.documents.Producto;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 
 public interface ProductoService {
 
