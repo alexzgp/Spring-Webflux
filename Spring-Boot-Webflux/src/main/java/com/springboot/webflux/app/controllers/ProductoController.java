@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +19,11 @@ import org.thymeleaf.spring6.context.webflux.ReactiveDataDriverContextVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 @SessionAttributes("producto")
 @Controller
@@ -28,11 +32,33 @@ public class ProductoController {
     @Autowired
     private ProductoService service;
 
+    @Value("${config.uploads.path}")
+    private String path;
+
     private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
 
     @ModelAttribute("categorias")
     public Flux<Categoria> categorias(){
         return service.findAllCategoria();
+    }
+
+    @GetMapping("/ver/{id}")
+    public Mono<String> ver(Model model, @PathVariable String id){
+
+        return service.findById(id).doOnNext(p -> {
+            model.addAttribute("producto", p);
+            model.addAttribute("title", "Detalle producto");
+        }).switchIfEmpty(Mono.just(new Producto()))
+                .flatMap(p -> {
+                    if (p.getId() == null){
+                        return Mono.just(new InterruptedException("No se ha encontrado el producto"));
+                    }
+                    return Mono.just(p);
+                })
+                .then(Mono.just("ver"))
+                .onErrorResume(ex -> {
+                    return Mono.just("redirect:/listar?error=no+se+consigue+producto");
+                });
     }
 
     @GetMapping({"/listar", "/"})
@@ -89,7 +115,8 @@ public class ProductoController {
     }
 
     @PostMapping("/form") // Es obligatorio que el BindingResult vaya después del objeto a validar
-    public Mono<String> guardar(@Valid Producto producto, BindingResult result, Model model, SessionStatus status){
+    public Mono<String> guardar(@Valid Producto producto, BindingResult result, Model model,
+                                @RequestPart(name = "file") FilePart archivo, SessionStatus status){
         if (result.hasErrors()){
             model.addAttribute("title", "Editar Producto");
             model.addAttribute("boton", "Guardar");
@@ -103,12 +130,22 @@ public class ProductoController {
                 if (producto.getCreateAt() == null){
                     producto.setCreateAt(new Date());
                 }
+
+                if (!archivo.filename().isEmpty()){
+                    producto.setFoto(UUID.randomUUID().toString() + "-" + archivo.filename()
+                            .replace(" ", "")
+                            .replace(":", "")
+                            .replace("\\", ""));
+                }
                 producto.setCategoria(c);
                 return service.save(producto);
             }).doOnNext(p -> {
                         log.info("Categoria asignada: " + p.getCategoria().getNombre()
                                 + " Id cat: " + p.getCategoria().getId());
                         log.info("Producto: " + p.getNombre() + " Id: " + p.getId());
+                    })
+                    .flatMap(p -> {
+                        return archivo.transferTo(new File(path + p.getFoto()));
                     })
                     .thenReturn("redirect:/listar?success=producto+guardado+con+exito");
         }
