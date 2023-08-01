@@ -24,7 +24,10 @@ public class Producto {
     private Date createAt;
 
     @Valid
+    @NotNull
     private Categoria categoria;
+
+    private String foto;
 
     public Producto() {}
 
@@ -76,5 +79,13 @@ public class Producto {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }
