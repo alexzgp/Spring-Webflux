@@ -1,7 +1,9 @@
 package com.springboot.webflux.app;
 
-import com.springboot.webflux.app.models.dao.ProductoDao;
+
+import com.springboot.webflux.app.models.documents.Categoria;
 import com.springboot.webflux.app.models.documents.Producto;
+import com.springboot.webflux.app.models.services.ProductoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import java.util.Date;
 public class SpringBootWebfluxApplication implements CommandLineRunner {
 
 	@Autowired
-	private ProductoDao dao;
+	private ProductoService service;
 
 	@Autowired
 	private ReactiveMongoTemplate mongoTemplate;
@@ -32,19 +34,34 @@ public class SpringBootWebfluxApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		mongoTemplate.dropCollection("productos").subscribe();
+		mongoTemplate.dropCollection("categorias").subscribe();
 
-		Flux.just(new Producto("Tv Panasonic", 320.29),
-		new Producto("Xiaomy movil", 50.29),
-		new Producto("Tv Panasonic", 320.29),
-		new Producto("Patinete xiaomy", 120.29),
-		new Producto("Teclado inalambrico", 20.29),
-		new Producto("Xiaomy movil", 50.29),
-		new Producto("Tv Panasonic", 320.29),
-		new Producto("Patinete xiaomy", 120.29))
-				.flatMap(producto -> {
-					producto.setCreateAt(new Date());
-					return dao.save(producto);
+		Categoria electronico = new Categoria("Electrónico");
+		Categoria computacion = new Categoria("Computación");
+		Categoria deporte = new Categoria("Deporte");
+		Categoria muebles = new Categoria("Muebles");
+
+		Flux.just(electronico, computacion, deporte, muebles)
+				.flatMap(service::saveCategoria)
+				.doOnNext(c -> {
+					log.info("Categoria creada: " + c.getNombre() + ", Id: " + c.getId());
 				})
+				.thenMany(
+						Flux.just(new Producto("Tv Panasonic", 320.29, electronico),
+								new Producto("Xiaomy movil", 50.29, computacion),
+								new Producto("Bicicleta de Montaña", 300.29, deporte),
+								new Producto("Escritorio", 50.29, muebles),
+								new Producto("Tv Panasonic", 320.29, electronico),
+								new Producto("Patinete xiaomy", 120.29, electronico),
+								new Producto("Teclado inalambrico", 20.29, computacion),
+								new Producto("Xiaomy movil", 50.29, computacion),
+								new Producto("Tv Panasonic", 320.29, electronico),
+								new Producto("Patinete xiaomy", 120.29, electronico))
+						.flatMap(producto -> {
+							producto.setCreateAt(new Date());
+							return service.save(producto);
+						})
+				)
 				.subscribe(producto -> log.info("Insert: " + producto.getId() + " " + producto.getNombre()));
 
 	}
