@@ -1,10 +1,8 @@
-package com.springboot.webflux.app.models.documents;
+package com.spring.webflux.apirest.app.models.documents;
 
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "categorias")
 public class Categoria {
 
     @Id
