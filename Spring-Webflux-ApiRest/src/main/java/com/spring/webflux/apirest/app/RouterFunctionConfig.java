@@ -30,6 +30,8 @@ public class RouterFunctionConfig {
                                 .andRoute(RequestPredicates.DELETE("/api/v2/productos/{id}"),
                                         handler::eliminar)
                                 .andRoute(RequestPredicates.POST("/api/v2/productos/upload/{id}"),
-                                        handler::uploads);
+                                        handler::upload)
+                                .andRoute(RequestPredicates.POST("/api/v2/productos/crear"),
+                                        handler::crearConFoto);
     }
 }
