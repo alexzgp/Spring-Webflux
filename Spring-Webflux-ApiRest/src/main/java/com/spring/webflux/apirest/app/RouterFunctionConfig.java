@@ -24,6 +24,12 @@ public class RouterFunctionConfig {
                                 .andRoute(RequestPredicates.GET("/api/v2/productos/{id}"),
                                         request -> handler.ver(request))
                                 .andRoute(RequestPredicates.POST("/api/v2/productos"),
-                                        request -> handler.crear(request));
+                                        request -> handler.crear(request))
+                                .andRoute(RequestPredicates.PUT("/api/v2/productos/{id}"),
+                                        request -> handler.editar(request))
+                                .andRoute(RequestPredicates.DELETE("/api/v2/productos/{id}"),
+                                        handler::eliminar)
+                                .andRoute(RequestPredicates.POST("/api/v2/productos/upload/{id}"),
+                                        handler::uploads);
     }
 }
