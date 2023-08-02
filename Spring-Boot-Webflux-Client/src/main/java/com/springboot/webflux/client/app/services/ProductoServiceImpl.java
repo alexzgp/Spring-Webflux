@@ -32,7 +32,7 @@ public class ProductoServiceImpl implements ProductoService{
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", id);
 
-        return client.get().uri("/{id}")
+        return client.get().uri("/{id}", params)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(Producto.class);
