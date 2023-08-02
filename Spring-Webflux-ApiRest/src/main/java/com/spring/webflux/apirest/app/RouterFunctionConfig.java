@@ -22,6 +22,8 @@ public class RouterFunctionConfig {
                                     .or(RequestPredicates.GET("/api/v3/productos")),
                                     request -> handler.listar(request))
                                 .andRoute(RequestPredicates.GET("/api/v2/productos/{id}"),
-                                        request -> handler.ver(request));
+                                        request -> handler.ver(request))
+                                .andRoute(RequestPredicates.POST("/api/v2/productos"),
+                                        request -> handler.crear(request));
     }
 }
