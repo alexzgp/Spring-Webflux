@@ -32,8 +32,9 @@ public class SpringWebfluxApiRestApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		mongoTemplate.dropCollection("productos").subscribe();
-		mongoTemplate.dropCollection("categorias").subscribe();
+		//Reseteo automático BBDD
+		mongoTemplate.dropCollection("producto").subscribe();
+		mongoTemplate.dropCollection("categoria").subscribe();
 
 		Categoria electronico = new Categoria("Electrónico");
 		Categoria computacion = new Categoria("Computación");

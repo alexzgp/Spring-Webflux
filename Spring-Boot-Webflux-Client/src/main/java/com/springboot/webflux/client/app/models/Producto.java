@@ -9,6 +9,7 @@ public class Producto {
     private Double precio;
     private Date createAt;
     private String foto;
+
     private Categoria categoria;
 
     public String getId() {

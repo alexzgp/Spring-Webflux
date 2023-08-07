@@ -29,7 +29,7 @@ public class ProductoController {
     @Autowired
     private ProductoService service;
 
-    @Value("config.uploads.path")
+    @Value("${config.uploads.path}")
     private String path;
 
     @PostMapping("/v2") //En este caso como no será posible pasar en JSON no es necesario el @RequestBody
