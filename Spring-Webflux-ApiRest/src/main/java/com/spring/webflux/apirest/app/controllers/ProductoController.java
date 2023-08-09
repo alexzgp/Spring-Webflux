@@ -95,7 +95,7 @@ public class ProductoController {
 
             return service.save(producto).map(p -> {
                 respuesta.put("produto", p);
-                respuesta.put("mensaje", "Producto creado con éxitp");
+                respuesta.put("mensaje", "Producto creado con exito");
                 respuesta.put("timestamp", new Date());
 
                 return ResponseEntity

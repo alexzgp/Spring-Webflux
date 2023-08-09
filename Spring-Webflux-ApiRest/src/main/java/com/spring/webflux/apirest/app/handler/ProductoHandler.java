@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 @Component
 public class ProductoHandler {
